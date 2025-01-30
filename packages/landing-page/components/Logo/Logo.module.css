@@ -1,0 +1,10 @@
+.text {
+  text-decoration: none;
+  :link,
+  :hover,
+  :focus,
+  :visited,
+  :active {
+    text-decoration: none;
+  }
+}

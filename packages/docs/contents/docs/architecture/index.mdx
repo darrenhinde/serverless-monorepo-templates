@@ -1,0 +1,154 @@
+---
+title: Architecture Overview
+description: This section provides an overview of the architecture in our SST v3 project.
+keywords: ["architecture", "SST", "serverless", "AWS"]
+---
+
+# Architecture Overview of Our SST v3 Project
+
+This guide outlines the high-level architecture of our SST (Serverless Stack) v3 project. We'll break down the different components and explain how they interact with each other.
+
+## Overview of the Architecture
+
+<Mermaid chart={`
+flowchart TD
+    subgraph Frontend
+        style Frontend fill:#d3d3d3
+        A[Next.js]
+    end
+    subgraph API
+        style API fill:#d3d3d3
+        B[tRPC]
+    end
+    subgraph Backend
+        style Backend fill:#d3d3d3
+        C[Services]
+        D[Database - DynamoDB]
+        E[File Storage - S3]
+        F[Authentication - Cognito]
+    end
+    subgraph Infrastructure
+        style Infrastructure fill:#d3d3d3
+        G[SST]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+    C --> E
+    C --> F
+    G --> A
+    G --> B
+    G --> C
+    G --> D
+    G --> E
+    G --> F
+`} config={{ "flowchart": { "curve": "step" } }} />
+
+---
+
+## Key Components
+
+### 1. Frontend (Next.js)
+
+Our frontend is built using Next.js, providing a robust and performant user interface.
+
+- **Location**: `packages/dashboard`
+- **Key Features**:
+  - Server-side rendering
+  - API routes for backend communication
+  - Integration with tRPC for type-safe API calls
+
+### 2. API Layer (tRPC)
+
+We use tRPC to create a type-safe API layer between our frontend and backend.
+
+- **Location**: `packages/core/src/trpc`
+- **Key Features**:
+  - Type-safe API endpoints
+  - Automatic API documentation
+  - Seamless integration with React hooks
+
+### 3. Backend Services
+
+Our backend services handle business logic and data processing.
+
+- **Location**: `packages/core/src`
+- **Key Components**:
+  - Queries: `packages/core/src/queries`
+  - Mutations: `packages/core/src/mutations`
+  - Database entities: `packages/core/src/database/entities`
+
+### 4. Database (DynamoDB)
+
+We use Amazon DynamoDB as our primary database.
+
+- **Configuration**: `infra/dynamo.ts`
+- **Key Features**:
+  - Serverless NoSQL database
+  - Scalable and high-performance
+  - Integrated with ElectroDB for improved data modeling
+
+### 5. File Storage (S3)
+
+Amazon S3 is used for storing and serving static files and assets.
+
+- **Configuration**: Defined in SST stack
+- **Usage**: Storing user uploads, static assets, etc.
+
+### 6. Authentication (Cognito)
+
+We use Amazon Cognito for user authentication and authorization.
+
+- **Configuration**: Defined in SST stack
+- **Integration**: Used across the application for secure access
+
+### 7. SST Infrastructure
+
+SST manages our entire serverless infrastructure on AWS.
+
+- **Configuration**: `sst.config.ts`
+- **Key Features**:
+  - Infrastructure as code
+  - Local development environment
+  - Easy deployment and management of AWS resources
+
+---
+
+## Architecture Breakdown
+
+### Frontend to API Communication
+
+1. The Next.js frontend makes API calls using tRPC client.
+2. tRPC router in the backend receives these calls and directs them to appropriate handlers.
+
+### API to Backend Services
+
+1. tRPC procedures call corresponding query or mutation functions.
+2. These functions interact with database entities or other AWS services as needed.
+
+### Data Persistence
+
+1. Backend services use ElectroDB entities to interact with DynamoDB.
+2. File uploads are stored in S3 buckets.
+
+### Authentication Flow
+
+1. Users authenticate through Cognito.
+2. JWT tokens are used to secure API calls and authorize access to resources.
+
+---
+
+## Key Considerations in Our Architecture
+
+- **Scalability**: Serverless architecture allows automatic scaling based on demand.
+- **Type Safety**: Use of TypeScript and tRPC ensures type safety across the stack.
+- **Developer Experience**: SST provides a seamless local development experience.
+- **Cost-Efficiency**: Pay-per-use model of serverless services optimizes costs.
+- **Security**: Integrated authentication and authorization with Cognito.
+
+---
+
+This architecture provides a robust, scalable, and maintainable foundation for our application. As we continue to develop, we'll expand on these components and potentially introduce new services as needed.
+
+For more detailed information on each component, please refer to their respective documentation sections.

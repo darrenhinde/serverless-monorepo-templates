@@ -1,0 +1,17 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@nextsystems/transactional/*": [
+        "../transactional/*"
+      ],
+      "@nextsystems/schemas/*": [
+        "../schemas/src/*"
+      ],
+    },
+    "jsx": "react-jsx"
+  },
+}

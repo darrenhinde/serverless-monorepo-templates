@@ -1,0 +1,208 @@
+---
+title: Plan of Architecture
+description: This section provides an overview of the architecture plan.
+---
+
+In this section, we will delve into the architecture plan of our system. We will explore various diagrams and models that illustrate the structure and design of our application. These diagrams will help in understanding the relationships between different components and how they interact with each other.
+
+
+## Entity-Relationship Diagram
+<Mermaid chart={`erDiagram
+    Comments {
+        string commentId PK
+        string relatedId FK
+        string commentText
+        string commentedBy
+        timestamp createdAt
+        string parentCommentId
+    }
+    PermissionsRoles {
+        string roleId PK
+        string roleName
+        map permissions
+        set assignedTo
+    }
+    AuditLogs {
+        string auditLogId PK
+        timestamp timestamp
+        string userId FK
+        string action
+        string entityType
+        string entityId
+        string details
+    }
+    Users {
+        string userId PK
+        string userName
+        string email
+        timestamp createdAt
+    }
+    Ideas {
+        string ideaId PK
+        string title
+        string description
+        string createdBy
+        timestamp createdAt
+    }
+    ContentPlans {
+        string contentPlanId PK
+        string ideaId FK
+        string title
+        string description
+        string createdBy
+        timestamp createdAt
+    }
+    ContentPieces {
+        string contentPieceId PK
+        string contentPlanId FK
+        string title
+        text body
+        string createdBy
+        timestamp createdAt
+    }
+    Resources {
+        string resourceId PK
+        string contentPieceId FK
+        string url
+        string type
+        string uploadedBy
+        timestamp uploadedAt
+    }
+    AIWorkflows {
+        string workflowId PK
+        string name
+        string description
+        string createdBy
+        timestamp createdAt
+    }
+    AILogs {
+        string logId PK
+        string workflowId FK
+        timestamp timestamp
+        string details
+    }
+    Analytics {
+        string analyticsId PK
+        string contentPieceId FK
+        int views
+        int likes
+        int shares
+        timestamp createdAt
+    }
+    VersionControl {
+        string versionId PK
+        string contentPieceId FK
+        int versionNumber
+        text changes
+        timestamp createdAt
+    }
+
+    Users ||--o{ Ideas : creates
+    Ideas ||--o{ ContentPlans : "is part of"
+    ContentPlans ||--o{ ContentPieces : contains
+    ContentPieces ||--o{ Resources : has
+    Users ||--o{ Resources : uploads
+    Users ||--o{ AIWorkflows : triggers
+    AIWorkflows ||--o{ AILogs : logs
+    ContentPieces ||--o{ Analytics : tracks
+    ContentPieces ||--o{ VersionControl : versioned
+    Ideas ||--o{ Comments : "has comments"
+    ContentPlans ||--o{ Comments : "has comments"
+    ContentPieces ||--o{ Comments : "has comments"
+    Users ||--o{ PermissionsRoles : "has roles"
+    Users ||--o{ AuditLogs : "is logged"
+    Ideas ||--o{ AuditLogs : "is logged"
+    ContentPlans ||--o{ AuditLogs : "is logged"
+    ContentPieces ||--o{ AuditLogs : "is logged"
+    Resources ||--o{ AuditLogs : "is logged"
+`} />
+
+---
+
+### **3.  Content Creation Process**
+<Mermaid chart={`
+flowchart TD
+    subgraph Idea Phase
+        A[Idea Generation] --> B[Idea Management]
+    end
+
+    subgraph Research Phase
+        B --> C[Research and Resource Gathering]
+    end
+
+    subgraph Planning Phase
+        C --> D[Content Planning]
+    end
+
+    subgraph Creation Phase
+        D --> E[Content Creation]
+        E --> I[AI Workflow Execution]
+        I --> E
+        D --> I
+    end
+
+    subgraph Review Phase
+        E --> F[Review and Approval]
+        F --> L[Compliance and Legal Review]
+    end
+
+    subgraph Publishing Phase
+        F --> G[Scheduling and Publishing]
+        G --> M[Integration with External Platforms]
+        M --> G
+    end
+
+    subgraph Post-Publishing Phase
+        G --> H[Post-Publishing Analytics]
+        H --> D
+        H --> O[AI Analytics Interpretation]
+        O --> D
+    end
+
+    subgraph Collaboration and Communication
+        F --> J[Collaboration and Communication]
+        E --> J
+        C --> J
+        B --> J
+    end
+
+    subgraph Version Control
+        E --> K[Version Control]
+    end
+
+    subgraph Content Lifecycle Management
+        G --> N[Content Lifecycle Management]
+    end
+`} />
+
+---
+
+### **4. Core Tables for Proof of Concept (POC)**
+
+To get a **Proof of Concept (POC)** up and running efficiently, we'll focus on the most critical tables required for content creation, management, and AI automation. Here are the core tables you should prioritize for your POC:
+
+1. **Users Table**: Essential for managing user information and access control.
+2. **Ideas Table**: The starting point for storing content ideas, which will evolve into content plans and pieces.
+3. **Content Plans Table**: Manages the structured content plans from ideas, enabling collaborative planning.
+4. **Content Pieces Table**: Represents the actual content pieces to be created and published.
+5. **AI Workflows Table**: Handles AI automation, which will help in generating and optimizing content.
+6. **Resources Table**: Stores any associated assets (images, videos, documents) for the content.
+7. **Analytics Table**: Tracks performance data for the published content pieces, providing insights for future content.
+
+**Secondary Tables for Consideration in the POC**:
+- **Comments Table**: If collaboration is a key feature of your POC, this will help with discussions and feedback.
+- **Audit Logs Table**: Useful for tracking user actions, ensuring accountability from the start.
+- **Version Control Table**: If versioning is critical during POC, include this to track changes to content.
+
+---
+
+### **Final Thoughts and Improvements**
+
+**Improvements**:
+- **Efficiency**: The schema is designed with efficiency in mind, using partition keys and sort keys to ensure fast querying, along with indexing on critical attributes like `tags`, `assignedTo`, and `status` to filter content quickly.
+- **Flexibility**: The modular design of content plans, content pieces, and AI workflows allows you to easily extend functionality without needing significant changes to the underlying schema.
+- **AI Automation**: By including a robust AI workflow mechanism, the system is prepared to scale with AI-driven content generation and optimization tasks.
+
+---
+
+This design should give you a strong foundation for building out a POC and eventually scaling the application with features like collaboration, AI automation, and content analytics. If you need further guidance or refinements, feel free to ask!

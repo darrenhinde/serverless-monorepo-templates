@@ -1,0 +1,12 @@
+{
+  "docs": {
+    "title": "Documentation",
+    "type": "page"
+  },
+  "join-discord": {
+    "title": "Join Discord",
+    "type": "page",
+    "href": "https://discord.gg/QepFYTtWdX",
+    "newWindow": true
+  }
+}

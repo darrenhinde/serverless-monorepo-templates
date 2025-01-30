@@ -1,0 +1,8 @@
+.price {
+  font-size: rem(54px);
+  font-weight: 800;
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    font-size: rem(40px);
+  }
+}

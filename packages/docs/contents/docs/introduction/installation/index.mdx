@@ -1,0 +1,177 @@
+---
+title: Installation
+description: This guide covers the installation of the SST v3 project and how to set up your development environment.
+keywords: ["installation", "github", "node", "guide", "sst", "aws"]
+---
+
+To install and work on this SST v3 project, you need to have several prerequisites in place. Here's a list of all the essential pre-requisites for setting up and working on this project.
+
+## Prerequisites
+
+<Step>
+<StepItem title="System Requirements">
+
+  - **Node.js:** Make sure you have Node.js version 18.17 or higher installed. You can download it from [here](https://nodejs.org/).
+  - **pnpm:** The project uses `pnpm` commands. You can install it globally using npm: `npm install -g pnpm`.
+  - **AWS Account:** You need an AWS account and the AWS CLI configured with your credentials.
+
+To verify Node.js and pnpm installation, run:
+
+  ```bash
+  node -v
+  pnpm -v
+  ```
+
+To verify AWS CLI configuration:
+
+  ```bash
+  aws configure list
+  ```
+
+</StepItem>
+<StepItem title="Git">
+You need to have Git installed to clone the repository. Download Git from [here](https://git-scm.com/).
+
+Verify the installation:
+
+  ```bash
+  git --version
+  ```
+
+</StepItem>
+<StepItem title="Code Editor">
+You'll need a code editor to work on the project. Common options include:
+
+  - [Visual Studio Code](https://code.visualstudio.com/)
+  - [WebStorm](https://www.jetbrains.com/webstorm/)
+  - Any other text editor you prefer.
+
+</StepItem>
+<StepItem title="Required Knowledge">
+- **SST:** Familiarity with SST (Serverless Stack) concepts and commands.
+- **AWS:** Basic understanding of AWS services, especially Lambda, API Gateway, and DynamoDB.
+- **Next.js:** The project uses Next.js for frontend applications.
+- **React:** Understanding of React's component structure and hooks.
+- **TypeScript:** The project is written in TypeScript.
+- **Infrastructure as Code:** Familiarity with defining cloud resources programmatically.
+
+</StepItem>
+</Step>
+
+## Installation
+
+<Step>
+<StepItem title="Clone the Repository">
+First, clone the repository to your local machine using Git:
+
+  ```bash
+  git clone https://github.com/your-username/your-project.git
+  cd your-project
+  ```
+
+</StepItem>
+<StepItem title="Install Dependencies">
+Use pnpm to install all the required dependencies:
+
+  ```bash
+  pnpm install
+  ```
+
+This will install all the dependencies listed in the package.json file, including SST, AWS SDK, Next.js, and other project-specific packages.
+
+</StepItem>
+
+<StepItem title="Starting the SST Development Environment">
+Start the SST development environment by running:
+
+  ```bash
+  pnpm sst dev
+  ```
+
+The first time you run this, you'll be prompted to choose a stage name. Use a personal identifier (e.g., your name) to namespace your resources.
+
+</StepItem>
+
+<StepItem title="Editing the Project">
+  - **Infrastructure:** SST stacks are defined in the `infra/` directory.
+  - **Lambda Functions:** AWS Lambda function handlers are in `packages/functions/`.
+  - **Core Logic:** Business logic is centralized in `packages/core/`.
+  - **Frontend:** Next.js applications are in `packages/landing-page/` and `packages/main-app/`.
+  - **Schemas:** Zod schemas and TypeScript types are in `packages/schemas/`.
+
+To make any changes to the project, open the files in your editor and modify them as needed.
+
+<Note title="Live Lambda Development" type="info">
+  SST's Live Lambda Development allows you to test your changes in real-time without redeploying your stack.
+</Note>
+
+</StepItem>
+<StepItem title="Building for Production">
+To build the project for production:
+
+  ```bash
+  pnpm sst build
+  ```
+
+This will generate a production-ready build of your SST application.
+
+</StepItem>
+<StepItem title="Deploying to AWS">
+To deploy your SST application to AWS:
+
+  ```bash
+  pnpm sst deploy --stage prod
+  ```
+
+This will deploy your application to the specified stage in your AWS account.
+
+</StepItem>
+</Step>
+
+## Optional
+<Step>
+<StepItem title="Setting Up CI/CD">
+Consider setting up a CI/CD pipeline using services like AWS CodePipeline or GitHub Actions for automated testing and deployment.
+</StepItem>
+<StepItem title="Local Testing">
+You can use the `sst bind` command to test your Lambda functions locally:
+</StepItem> 
+</Step>
+
+
+## Project structure
+
+Your SST project is organized as follows:
+
+```
+project-root/
+├── infra/                   # Infrastructure as code using SST
+├── packages/
+│   ├── core/                # Business logic and core functionalities
+│   ├── functions/           # AWS Lambda function handlers
+│   ├── landing-page/        # Landing page frontend (Next.js)
+│   ├── main-app/            # Main application frontend (Next.js)
+│   └── schemas/             # Zod schemas and TypeScript types
+├── sst.config.ts            # SST configuration file
+└── package.json             # Root package file
+```
+
+
+## Making your first change
+
+Now that you've set up your project, let's make a simple change to the landing page:
+
+1. Open `packages/landing-page/src/app/page.tsx`
+2. Modify the welcome message
+3. Save the file and observe the changes in your browser
+
+SST's live lambda development will automatically update your application.
+
+## Next steps
+
+Now that you've made your first change, here are some resources to explore further:
+
+- [Project Structure](/project-structure)
+- [Adding a New DynamoDB Table](/add-dynamodb-table)
+- [Deploying to Production](/deployment)
+

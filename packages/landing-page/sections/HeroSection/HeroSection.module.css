@@ -1,0 +1,47 @@
+.title {
+  font-size: rem(80px);
+  font-weight: 900;
+
+  @media (max-width: $mantine-breakpoint-md) {
+    font-size: rem(50px);
+  }
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    font-size: rem(45px);
+  }
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    font-size: rem(28px);
+  }
+}
+
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.shine {
+  position: relative; 
+  overflow: hidden; 
+  border: none
+}
+
+.shine::after {
+  content: ''; 
+  position: absolute; 
+  top: 0; 
+  left: -100%; 
+  width: 100%; 
+  height: 100%; 
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0.2) 100%); 
+  transform: skewX(-30deg); 
+  animation: shine 5s infinite
+}

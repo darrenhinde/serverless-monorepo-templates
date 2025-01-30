@@ -1,0 +1,6 @@
+.root {
+  letter-spacing: -0.4px;
+  font-weight: 800;
+  color: var(--mantine-color-gray-1);
+  font-family: 'Source Sans 3', sans-serif;
+}

@@ -1,0 +1,5 @@
+.hover {
+  @mixin hover {
+    background-color: var(--mantine-color-dark-8);
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@nextsystems/core/*": ["../core/src/*"],
+      "@nextsystems/schemas/*": [
+        "../schemas/src/*"
+      ]
+    }
+  }
+}

@@ -1,0 +1,5 @@
+packages:
+  - "packages/**/*"
+  - "!**/.open-next/**" 
+  - "!**/.next/**" 
+  - "!**/dist/**" 

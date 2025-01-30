@@ -1,0 +1,27 @@
+{
+  "name": "@nextsystems/core",
+  "version": "0.0.0",
+  "node": "20.14.00",
+  "type": "module",
+  "scripts": {
+    "test": "sst bind vitest",
+    "typecheck": "tsc -noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.11",
+    "sst": "3.0.70",
+    "vitest": "^2.1.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.670.0",
+    "@aws-sdk/client-s3": "^3.673.0",
+    "@aws-sdk/client-sesv2": "^3.672.0",
+    "@aws-sdk/lib-dynamodb": "^3.670.0",
+    "@aws-sdk/s3-request-presigner": "^3.673.0",
+    "@react-email/components": "0.0.22",
+    "@trpc/server": "^10.45.2",
+    "electrodb": "^2.15.0",
+    "stripe": "^16.12.0",
+    "zod": "^3.23.8"
+  }
+}

@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://blitz-ship.com
+
+# Sitemaps
+Sitemap: https://blitz-ship.com/sitemap.xml

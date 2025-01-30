@@ -1,0 +1,11 @@
+.root {
+  letter-spacing: -0.4px;
+  font-weight: 400;
+  color: var(--mantine-color-gray-1);
+
+  &[data-variant='title'] {
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  
+}

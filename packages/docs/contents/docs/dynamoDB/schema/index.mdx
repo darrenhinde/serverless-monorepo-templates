@@ -1,0 +1,360 @@
+---
+title: DynamoDB Schema
+description: This guide provides an overview of the DynamoDB schema used in the project, including core tables for content creation, AI automation, analytics, and collaboration.
+keywords: ["dynamodb", "schema", "database", "guide", "sst", "aws"]
+---
+DynamoDB schema includes the core tables needed for content creation, AI automation, analytics, and collaboration. I'll first present the schema, then the Mermaid diagrams to visualize the table relationships and the content creation process.
+
+## Full DynamoDB Schema
+
+### Users Table
+**Purpose:** Store user information and roles.  
+**Primary Key:** userId (Partition Key)  
+**Attributes:**
+- username (String)
+- email (String)
+- roleIds (Set of roleIds from the Permissions Table)
+- createdAt (Timestamp)
+
+### Ideas Table
+**Purpose:** Store content ideas, including ready-to-develop ideas.  
+**Primary Key:** ideaId (Partition Key)  
+**Sort Key:** createdAt  
+**Attributes:**
+- title (String)
+- description (String)
+- status (String, e.g., new, ready, in_progress, completed)
+- tags (Set of Strings)
+- assignedTo (Set of userIds)
+- createdBy (userId)
+- versionId (Reference to Version Control Table)
+- commentsEnabled (Boolean)
+- updatedAt (Timestamp)
+
+### Content Plans Table
+**Purpose:** Define structured plans for content creation from ideas.  
+**Primary Key:** contentPlanId (Partition Key)  
+**Sort Key:** ideaId  
+**Attributes:**
+- title (String)
+- ideaId (Reference to Ideas Table)
+- platforms (List of Strings, e.g., YouTube, Twitter)
+- contentTypes (List of Strings, e.g., video, article)
+- schedule (Map of dates and times)
+- tags (Set of Strings)
+- assignedTo (Set of userIds)
+- workflowStatus (String, e.g., draft, under_review, approved)
+- approvalRequired (Boolean)
+- status (String)
+- createdAt (Timestamp)
+- updatedAt (Timestamp)
+
+### Content Pieces Table
+**Purpose:** Represents individual content pieces derived from content plans.  
+**Primary Key:** contentPieceId (Partition Key)  
+**Sort Key:** contentPlanId  
+**Attributes:**
+- title (String)
+- contentPlanId (Reference to Content Plans Table)
+- platform (String)
+- contentType (String)
+- status (String, e.g., draft, scheduled, published)
+- scheduledTime (Timestamp)
+- tags (Set of Strings)
+- assignedTo (Set of userIds)
+- publishingStatus (String, e.g., scheduled, published, failed)
+- externalPlatformId (String, ID assigned by the external platform)
+- analyticsId (Reference to Analytics Table)
+- createdAt (Timestamp)
+- updatedAt (Timestamp)
+
+### Resources Table
+**Purpose:** Stores attachments like images, videos, and documents related to ideas and content pieces.  
+**Primary Key:** resourceId (Partition Key)  
+**Sort Key:** relatedId (Could be ideaId or contentPieceId)  
+**Attributes:**
+- resourceType (String, e.g., image, document)
+- url (String)
+- uploadedBy (userId)
+- createdAt (Timestamp)
+- metadata (Map for additional info)
+- tags (Set of Strings)
+- versionId (Reference to Version Control Table)
+
+### AI Workflows Table
+**Purpose:** Store AI automation workflows associated with content creation.  
+**Primary Key:** workflowId (Partition Key)  
+**Sort Key:** contentPlanId  
+**Attributes:**
+- name (String)
+- steps (List of workflow steps)
+- status (String)
+- aiModelVersion (String)
+- trainingDataId (Reference to AI Training Data Table)
+- createdAt (Timestamp)
+- updatedAt (Timestamp)
+
+### AI Logs Table
+**Purpose:** Logs the execution details of AI workflows.  
+**Primary Key:** logId (Partition Key)  
+**Sort Key:** workflowId  
+**Attributes:**
+- timestamp (Timestamp)
+- status (String, e.g., success, failed)
+- messages (List of Strings or JSON)
+- output (String or reference to content)
+- executedBy (userId)
+
+### Analytics Table
+**Purpose:** Record analytics for published content pieces.  
+**Primary Key:** analyticsId (Partition Key)  
+**Sort Key:** contentPieceId  
+**Attributes:**
+- views (Number)
+- likes (Number)
+- shares (Number)
+- comments (Number)
+- platformMetrics (Map of platform-specific metrics)
+- updatedAt (Timestamp)
+
+### Version Control Table
+**Purpose:** Track changes and maintain history of content pieces for versioning and rollback.  
+**Primary Key:** versionId (Partition Key)  
+**Sort Key:** contentPieceId  
+**Attributes:**
+- versionNumber (Number)
+- contentData (String or JSON)
+- modifiedBy (userId)
+- modifiedAt (Timestamp)
+- changeSummary (String)
+
+### Comments Table
+**Purpose:** Facilitate collaboration through comments on ideas, content plans, and content pieces.  
+**Primary Key:** commentId (Partition Key)  
+**Sort Key:** relatedId (Could be ideaId, contentPlanId, or contentPieceId)  
+**Attributes:**
+- commentText (String)
+- commentedBy (userId)
+- createdAt (Timestamp)
+- parentCommentId (Optional, for threaded comments)
+
+### Permissions and Roles Table
+**Purpose:** Define granular permissions and access control for users and groups.  
+**Primary Key:** roleId (Partition Key)  
+**Attributes:**
+- roleName (String)
+- permissions (Map of entity types to actions, e.g., `{ "Ideas": ["create", "read"], "ContentPieces": ["read", "update"] }`)
+- assignedTo (Set of userIds)
+
+### Audit Logs Table
+**Purpose:** Record user actions for auditing purposes.  
+**Primary Key:** auditLogId (Partition Key)  
+**Sort Key:** timestamp  
+**Attributes:**
+- userId (userId)
+- action (String, e.g., create, update, delete)
+- entityType (String)
+- entityId (String)
+- details (String or JSON)
+
+## Entity-Relationship Diagram
+
+<Mermaid chart={`erDiagram
+    Comments {
+        string commentId PK
+        string relatedId FK
+        string commentText
+        string commentedBy
+        timestamp createdAt
+        string parentCommentId
+    }
+    PermissionsRoles {
+        string roleId PK
+        string roleName
+        map permissions
+        set assignedTo
+    }
+    AuditLogs {
+        string auditLogId PK
+        timestamp timestamp
+        string userId FK
+        string action
+        string entityType
+        string entityId
+        string details
+    }
+    Users {
+        string userId PK
+        string userName
+        string email
+        timestamp createdAt
+    }
+    Ideas {
+        string ideaId PK
+        string title
+        string description
+        string createdBy
+        timestamp createdAt
+    }
+    ContentPlans {
+        string contentPlanId PK
+        string ideaId FK
+        string title
+        string description
+        string createdBy
+        timestamp createdAt
+    }
+    ContentPieces {
+        string contentPieceId PK
+        string contentPlanId FK
+        string title
+        text body
+        string createdBy
+        timestamp createdAt
+    }
+    Resources {
+        string resourceId PK
+        string contentPieceId FK
+        string url
+        string type
+        string uploadedBy
+        timestamp uploadedAt
+    }
+    AIWorkflows {
+        string workflowId PK
+        string name
+        string description
+        string createdBy
+        timestamp createdAt
+    }
+    AILogs {
+        string logId PK
+        string workflowId FK
+        timestamp timestamp
+        string details
+    }
+    Analytics {
+        string analyticsId PK
+        string contentPieceId FK
+        int views
+        int likes
+        int shares
+        timestamp createdAt
+    }
+    VersionControl {
+        string versionId PK
+        string contentPieceId FK
+        int versionNumber
+        text changes
+        timestamp createdAt
+    }
+
+    Users ||--o{ Ideas : creates
+    Ideas ||--o{ ContentPlans : "is part of"
+    ContentPlans ||--o{ ContentPieces : contains
+    ContentPieces ||--o{ Resources : has
+    Users ||--o{ Resources : uploads
+    Users ||--o{ AIWorkflows : triggers
+    AIWorkflows ||--o{ AILogs : logs
+    ContentPieces ||--o{ Analytics : tracks
+    ContentPieces ||--o{ VersionControl : versioned
+    Ideas ||--o{ Comments : "has comments"
+    ContentPlans ||--o{ Comments : "has comments"
+    ContentPieces ||--o{ Comments : "has comments"
+    Users ||--o{ PermissionsRoles : "has roles"
+    Users ||--o{ AuditLogs : "is logged"
+    Ideas ||--o{ AuditLogs : "is logged"
+    ContentPlans ||--o{ AuditLogs : "is logged"
+    ContentPieces ||--o{ AuditLogs : "is logged"
+    Resources ||--o{ AuditLogs : "is logged"
+`} />
+
+---
+
+### **3. Content Creation Process**
+
+<Mermaid chart={`flowchart TD
+    subgraph Idea Phase
+        A[Idea Generation] --> B[Idea Management]
+    end
+
+    subgraph Research Phase
+        B --> C[Research and Resource Gathering]
+    end
+
+    subgraph Planning Phase
+        C --> D[Content Planning]
+    end
+
+    subgraph Creation Phase
+        D --> E[Content Creation]
+        E --> I[AI Workflow Execution]
+        I --> E
+        D --> I
+    end
+
+    subgraph Review Phase
+        E --> F[Review and Approval]
+        F --> L[Compliance and Legal Review]
+    end
+
+    subgraph Publishing Phase
+        F --> G[Scheduling and Publishing]
+        G --> M[Integration with External Platforms]
+        M --> G
+    end
+
+    subgraph Post-Publishing Phase
+        G --> H[Post-Publishing Analytics]
+        H --> D
+        H --> O[AI Analytics Interpretation]
+        O --> D
+    end
+
+    subgraph Collaboration and Communication
+        F --> J[Collaboration and Communication]
+        E --> J
+        C --> J
+        B --> J
+    end
+
+    subgraph Version Control
+        E --> K[Version Control]
+    end
+
+    subgraph Content Lifecycle Management
+        G --> N[Content Lifecycle Management]
+    end
+`} />
+
+---
+
+### **4. Core Tables for Proof of Concept (POC)**
+
+To get a **Proof of Concept (POC)** up and running efficiently, we’ll focus on the most critical tables required for content creation, management, and AI automation. Here are the core tables you should prioritize for your POC:
+
+1. **Users Table**: Essential for managing user information and access control.
+2. **Ideas Table**: The starting point for storing content ideas, which will evolve into content plans and pieces.
+3. **Content Plans Table**: Manages the structured content plans from ideas, enabling collaborative planning.
+4. **Content Pieces Table**: Represents the actual content pieces to be created and published.
+5. **AI Workflows Table**: Handles AI automation, which will help in generating and optimizing content.
+6. **Resources Table**: Stores any associated assets (images, videos, documents) for the content.
+7. **Analytics Table**: Tracks performance data for the published content pieces, providing insights for future content.
+
+**Secondary Tables for Consideration in the POC**:
+- **Comments Table**: If collaboration is a key feature of your POC, this will help with discussions and feedback.
+- **Audit Logs Table**: Useful for tracking user actions, ensuring accountability from the start.
+- **Version Control Table**: If versioning is critical during POC, include this to track changes to content.
+
+---
+
+### **Final Thoughts and Improvements**
+
+**Improvements**:
+- **Efficiency**: The schema is designed with efficiency in mind, using partition keys and sort keys to ensure fast querying, along with indexing on critical attributes like `tags`, `assignedTo`, and `status` to filter content quickly.
+- **Flexibility**: The modular design of content plans, content pieces, and AI workflows allows you to easily extend functionality without needing significant changes to the underlying schema.
+- **AI Automation**: By including a robust AI workflow mechanism, the system is prepared to scale with AI-driven content generation and optimization tasks.
+
+---
+
+This design should give you a strong foundation for building out a POC and eventually scaling the application with features like collaboration, AI automation, and content analytics. If you need further guidance or refinements, feel free to ask!

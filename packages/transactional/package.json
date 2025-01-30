@@ -1,0 +1,28 @@
+{
+  "name": "@nextsystems/transactional",
+  "node": "20.14.00",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "email dev --port 5001"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@react-email/body": "^0.0.9",
+    "@react-email/button": "^0.0.16",
+    "@react-email/components": "0.0.22",
+    "@react-email/container": "^0.0.13",
+    "@react-email/head": "^0.0.10",
+    "@react-email/heading": "^0.0.13",
+    "@react-email/html": "^0.0.9",
+    "@react-email/img": "^0.0.9",
+    "@react-email/preview": "^0.0.10",
+    "@react-email/section": "^0.0.13",
+    "@react-email/text": "^0.0.9",
+    "@types/react": "^18.3.11",
+    "react": "^18.3.1",
+    "react-email": "2.1.6"
+  }
+}
